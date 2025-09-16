@@ -13,13 +13,13 @@
   }
 }
 .bg-image{
-  background-image: url('./src/assets/hero.jpg');
+  background-image: url('./assets/hero.jpg');
 }
 .cta-image{
   background-image: url('./assets/ctaimg.jpg')
 }
 .impact_image{
-  background-image: url('./assets//impact-image.jpg')
+  background-image: url('./assets/impact-image.jpg')
 }
 @layer components {
   /* 
