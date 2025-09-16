@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FaLeaf, FaRecycle, FaTint, FaAward, FaTree } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-// --- Circular Progress Component ---
+// --- Reusable Circular Progress Component ---
 const CircularProgress: React.FC<{
   progress: number;
   size: number;
@@ -22,6 +22,7 @@ const CircularProgress: React.FC<{
 
   return (
     <svg width={size} height={size} className="mx-auto">
+      {/* Background circle */}
       <circle
         stroke="#e5e7eb"
         fill="transparent"
@@ -30,6 +31,7 @@ const CircularProgress: React.FC<{
         cx={size / 2}
         cy={size / 2}
       />
+      {/* Foreground progress circle */}
       <motion.circle
         stroke={colorMap[color] || "#10b981"}
         fill="transparent"
@@ -43,12 +45,13 @@ const CircularProgress: React.FC<{
         animate={{ strokeDashoffset: offset }}
         transition={{ duration: 1.2, ease: "easeInOut" }}
       />
+      {/* Percentage text in the middle */}
       <text
         x="50%"
         y="50%"
         textAnchor="middle"
         dy=".3em"
-        className="font-bold text-gray-700"
+        className="text-lg font-bold text-gray-700"
       >
         {progress}%
       </text>
@@ -56,25 +59,27 @@ const CircularProgress: React.FC<{
   );
 };
 
+// --- Main Impact Page Component ---
 const ImpactPage: React.FC = () => {
+  // --- Data for the page ---
   const memories = [
     {
       title: "Waste Segregation - Day 5",
       icon: <FaRecycle size={60} className="text-white" />,
       bg: "from-green-400 via-emerald-500 to-green-700",
-      href: "waste_segregate",
+      href: "/memories/waste-segregation", // Using a more realistic link path
     },
     {
       title: "Community Clean-up",
       icon: <FaLeaf size={60} className="text-white" />,
       bg: "from-emerald-400 via-lime-500 to-green-600",
-      href: "community_cleanup",
+      href: "/memories/community-cleanup",
     },
     {
       title: "First Sapling Planted",
       icon: <FaTree size={60} className="text-white" />,
       bg: "from-sky-400 via-blue-500 to-cyan-600",
-      href: "first_saple",
+      href: "/memories/first-sapling",
     },
   ];
 
@@ -84,13 +89,18 @@ const ImpactPage: React.FC = () => {
     { value: 35, label: "350L Water Conserved", color: "orange" },
   ];
 
-  const trophyColors = ["bg-yellow-400", "bg-sky-400", "bg-green-400", "bg-pink-400"];
+  const trophyColors = ["bg-yellow-400", "bg-gray-400", "bg-orange-400", "bg-sky-400"];
 
   return (
-    <div className="relative min-h-screen overflow-hidden font-sans">
+    // The main wrapper has a simple fallback background.
+    // It does NOT have overflow-hidden.
+    <div className="font-sans bg-gray-50">
+
+      {/* --- FIXED BACKGROUND AND PARTICLES --- */}
+
       {/* Animated Eco Gradient Background */}
       <motion.div
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 z-0" // 'fixed' keeps it stationary on scroll
         style={{
           background:
             "radial-gradient(circle at 20% 30%, #bbf7d0, transparent 60%), radial-gradient(circle at 80% 70%, #bfdbfe, transparent 60%), radial-gradient(circle at 50% 50%, #fde68a, transparent 70%)",
@@ -103,7 +113,7 @@ const ImpactPage: React.FC = () => {
       {[FaLeaf, FaRecycle, FaTint].map((Icon, i) => (
         <motion.div
           key={i}
-          className="absolute text-emerald-400 opacity-30"
+          className="fixed text-emerald-400 opacity-30 z-0" // 'fixed' keeps them stationary too
           style={{ top: `${15 + i * 25}%`, left: `${10 + i * 30}%` }}
           animate={{ y: [0, -25, 0], rotate: [0, 10, -10, 0] }}
           transition={{ duration: 8 + i * 2, repeat: Infinity, ease: "easeInOut" }}
@@ -112,6 +122,8 @@ const ImpactPage: React.FC = () => {
         </motion.div>
       ))}
 
+      {/* --- SCROLLABLE CONTENT CONTAINER --- */}
+      {/* This container scrolls naturally on top of the fixed background */}
       <div className="relative container mx-auto p-6 pt-28 z-10">
         {/* Page Title */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -125,7 +137,7 @@ const ImpactPage: React.FC = () => {
 
         {/* Hero Profile Card */}
         <motion.div
-          className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8 bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-emerald-200 hover:shadow-emerald-300 transition-shadow"
+          className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8 bg-white/90 backdrop-blur-xl p-10 rounded-3xl shadow-2xl border border-emerald-200 hover:shadow-emerald-300/60 transition-shadow duration-300"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -168,10 +180,10 @@ const ImpactPage: React.FC = () => {
           className="mt-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.5 }}
         >
           <h2 className="text-3xl font-bold text-gray-800 mb-6 drop-shadow">🏆 Trophy Shelf</h2>
-          <div className="bg-white/95 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-gray-200 flex justify-center">
+          <div className="bg-white/95 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-gray-200">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-6">
               {trophyColors.map((color, i) => (
                 <motion.div
@@ -191,14 +203,14 @@ const ImpactPage: React.FC = () => {
           className="mt-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.3 }}
         >
           <h2 className="text-3xl font-bold text-gray-800 mb-6 drop-shadow">🌟 My Memories</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {memories.map((mem, i) => (
               <Link key={i} to={mem.href}>
                 <motion.div
-                  className={`group relative flex flex-col items-center justify-center p-10 rounded-2xl shadow-2xl text-white bg-gradient-to-br ${mem.bg} hover:shadow-lg hover:shadow-emerald-400/50 transition-all`}
+                  className={`group relative flex flex-col items-center justify-center p-10 rounded-2xl shadow-2xl text-white bg-gradient-to-br ${mem.bg} hover:shadow-lg hover:shadow-emerald-400/50 transition-all duration-300`}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
